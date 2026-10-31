@@ -1,0 +1,25 @@
+name: Build
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Produce benign artifact
+        run: |
+          mkdir -p storybook-static tokens/css
+          printf '<html><body>BENIGN PREVIEW FROM TRUSTED BRANCH</body></html>\n' > storybook-static/index.html
+          echo "- benign" > tokens/css/file-sizes.diff
+      - uses: actions/upload-artifact@v4
+        with:
+          name: build
+          if-no-files-found: error
+          path: |
+            ./storybook-static
+            ./tokens/css/*.diff
